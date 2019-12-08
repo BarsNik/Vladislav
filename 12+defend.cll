@@ -1,0 +1,231 @@
+// Работа 12
+#include <iostream>
+#include <ctime>
+#include <algorithm>
+#include <windows.h>
+#include <string>
+
+using namespace std;
+
+bool nestr(string s)
+{
+	for (char c : s)
+	{
+		if (isdigit(c) == false)
+			return false;
+	}
+	return true;
+}
+
+int main()
+{
+
+	SetConsoleCP(1251);
+	SetConsoleOutputCP(1251);
+	srand(time(0));
+
+	float arr[6][6];
+	string rnd = " ", t = " ";
+	int x;
+
+	cout << " Заполнить случайными числами ? \t (введите \"да\" или  \"нет\" меленьким регистром) \n";
+vvod1:
+	getline(cin,t);
+
+	if (cin.fail() || cin.eof() || t == "")
+	{
+			cin.clear();
+			cout << " Обнаружена ошибка.\n Попробуйе снова: ";
+			goto vvod1;
+	}
+
+
+	if ((t == "да") || (t == "нет"))
+	{
+		rnd = t;
+	}
+	else
+	{
+		cout << " Введено неверное значение. (введите \"да\" или  \"нет\" меленьким регистром) \n Повторите ввод: ";
+		goto vvod1; //защита от некорректного ввода 
+	}
+
+
+	if (rnd == "да")
+	{
+		for (int i = 0; i < 6; ++i)
+			for (int j = 0; j < 6; ++j)
+			{
+				arr[i][j] = rand() % 100;
+				//cout << arr[i][j] << endl;
+			}
+	}
+	else
+	{
+		for (int i = 0; i < 6; ++i)
+			for (int j = 0; j < 6; ++j)
+			{
+				cout << "Эллемент матрицы [" << i + 1 << "][" << j + 1 << "] : ";
+
+			vvodmat: //защита от некорректного ввода 1
+				t = '\0';
+
+				while (true)
+				{
+					getline(cin, t);
+					
+					if (cin.fail() || cin.eof() || t == "" || !nestr(t))
+					{
+						cin.clear();
+						cout << " Обнаружена ошибка. Введите значение принадлеащее [0;100].\n Попробуйе снова: ";
+						goto vvodmat;
+					}
+					else
+						goto outw;
+				}
+
+			outw:
+
+				if (stoi(t) <= 100 && stoi(t) >= 0)
+				{
+					x = stoi(t);
+					arr[i][j] = x;
+				}
+				else
+				{
+					cout << " Введите значение принадлеащее [0;100].\n Попробуйе снова: ";
+					goto vvodmat;
+				}
+			}
+	}
+
+	//деление столбцов и строк. Проверка на деление на 0 включена
+
+	for (int i = 0; i < 6; ++i)
+	{
+		try
+		{
+			if (arr[0][i] == 0) throw exception("Деление на 0 при опереции: деление 2й строки на 1ю");
+			arr[1][i] /= arr[0][i];
+		}
+		catch (exception& e)
+		{
+			cout << e.what();
+			return 0;
+		}
+		//arr[1][i] /= arr[0][i];
+	}
+
+	for (int i = 0; i < 6; ++i)
+	{
+		try
+		{
+			if (arr[2][i] == 0) throw exception("Деление на 0 при опереции: деление 4й строки на 3ю");
+			arr[3][i] /= arr[2][i];
+		}
+		catch (exception& e)
+		{
+			cout << e.what();
+			return 0;
+		}
+		//arr[3][i] /= arr[2][i];
+	}
+
+	for (int i = 0; i < 6; ++i)
+	{
+		try
+		{
+			if (arr[4][i] == 0) throw exception("Деление на 0 при опереции: деление 6й строки на 5ю");
+			arr[5][i] /= arr[4][i];
+		}
+		catch (exception& e)
+		{
+			cout << e.what();
+			return 0;
+		}
+		//arr[5][i] /= arr[4][i];
+	}
+
+
+	for (int i = 1; i < 6; i = i + 2)
+	{
+		try
+		{
+			if (arr[i][0] == 0) throw exception("Деление на 0 при опереции: деление 2го столбца на 1й");
+			arr[i][1] /= arr[i][0];
+		}
+		catch (exception& e)
+		{
+			cout << e.what();
+			return 0;
+		}
+		//arr[i][1] /= arr[i][0];
+	}
+
+	for (int i = 1; i < 6; i = i + 2)
+	{
+		try
+		{
+			if (arr[i][2] == 0) throw exception("Деление на 0 при опереции: деление 4го столбца на 3й");
+			arr[i][3] /= arr[i][2];
+		}
+		catch (exception& e)
+		{
+			cout << e.what();
+			return 0;
+		}
+		//arr[i][3] /= arr[i][2];
+	}
+	float ar[3][3];
+	for (int i = 1; i < 6; i = i + 2)
+	{
+		try
+		{
+			if (arr[i][4] == 0) throw exception("Деление на 0 при опереции: деление 6го столбца на 5й");
+			arr[i][5] /= arr[i][4];
+		}
+		catch (exception& e)
+		{
+			cout << e.what();
+			return 0;
+		}
+		//arr[i][5] /= arr[i][4];
+	}
+
+	cout << "\n \n \n" << endl;
+
+	for (int i = 0; i < 6; ++i)
+	{
+		for (int j = 0; j < 6; ++j)
+		{
+			cout << arr[i][j] << "\t";
+		}
+	}
+
+
+	//отсортеруем столбцы по возрастанию
+
+	if (arr[1][1] > arr[3][1]) swap(arr[1][1], arr[3][1]);
+	if (arr[3][1] > arr[5][1]) swap(arr[5][1], arr[3][1]);
+	if (arr[1][1] > arr[3][1]) swap(arr[1][1], arr[3][1]);
+
+	if (arr[1][3] > arr[3][3]) swap(arr[1][3], arr[3][3]);
+	if (arr[3][3] > arr[5][3]) swap(arr[5][3], arr[3][3]);
+	if (arr[1][3] > arr[3][3]) swap(arr[1][3], arr[3][3]);
+
+	if (arr[1][5] > arr[3][5]) swap(arr[1][5], arr[3][5]);
+	if (arr[3][5] > arr[5][5]) swap(arr[5][5], arr[3][5]);
+	if (arr[1][5] > arr[3][5]) swap(arr[1][5], arr[3][5]);
+
+	cout << "\n \n \n" << endl;
+
+	//вывод ответа
+	cout <<fixed << arr[1][1] << "\t" << arr[1][3] << "\t" << arr[1][5] << "\n";
+	cout << arr[3][1] << "\t" << arr[3][3] << "\t" << arr[3][5] << "\n";
+	cout << arr[5][1] << "\t" << arr[5][3] << "\t" << arr[5][5] << "\n";
+
+	cout << "Для завершения работы программы введите \"конец\" : ";
+
+	while (t != "конец")
+		cin >> t;
+}
